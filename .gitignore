@@ -1,0 +1,33 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+.bundle
+.DS_Store
+.livereload
+.sass-cache/
+.yardoc/
+
+
+# backend
+
+# Ignore application configuration
+config/application.yml
+config/database.yml
+
+
+db/schema.rb
+db/schema.sql
+db/*.sqlite3
+
+log/*
+log/*.log
+
+tmp/cache/*
+tmp/sockets/*
+tmp/pids/*
+
+public/system/*
+public/assets/*
+public/uploads/*
+
+public/cache/*
+vendor/bundle/*
