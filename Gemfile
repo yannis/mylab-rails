@@ -37,8 +37,6 @@ gem 'slim'
 # Use Unicorn as the app server
 # gem 'unicorn'
 
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -61,6 +59,17 @@ group :development, :test do
   gem "faker"
 end
 
+group :development do
+  gem 'capistrano-rails'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rbenv'
+  gem 'capistrano-maintenance', github: "capistrano/maintenance", require: false
+end
+
 group :test do
   gem 'shoulda-matchers', require: false
+end
+
+group :production, :staging do
+  gem 'unicorn'
 end
