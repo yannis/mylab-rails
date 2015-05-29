@@ -1,17 +1,19 @@
 class API::V1::UsersController < ApplicationController
 
-  load_and_authorize_resource :user, param_method: :sanitizer, except: [:create]
+  load_and_authorize_resource :user, param_method: :sanitizer, except: [:show, :create]
 
   def index
-    respond_with @users, each_serializer: API::V1::UserSerializer
+    render json: @users, each_serializer: API::V1::UserSerializer
   end
 
   def show
-    respond_to do |format|
-      format.json {
-        render json: @user, serializer: API::V1::UserSerializer
-      }
+    if params[:token] && params[:id]
+      @user = User.where(id: params[:id], authentication_token: params[:token]).first
+    else
+      authorize! :read, User
+      @user = User.accessible_by(current_ability, :read).find(params[:id])
     end
+    render json: @user, serializer: API::V1::UserSerializer
   end
 
   def create
@@ -40,7 +42,7 @@ class API::V1::UsersController < ApplicationController
   end
 
   def destroy
-    respond_with @user.destroy
+    render json: @user.destroy
   end
 private
 

@@ -24,7 +24,7 @@ set :linked_files, %w{config/database.yml config/application.yml}
 # set :bundle_flags, "--deployment --quiet --binstubs --shebang ruby-local-exec"
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
+set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
 # Default value for default_env is {}
 # set :rbenv_path, "/Users/yannis/.rbenv"
@@ -99,7 +99,7 @@ namespace :deploy do
   end
 end
 
-# before "deploy:restart", "deploy:load_eye"
-# after "deploy:cleanup", "deploy:restart"
+before "deploy:restart", "deploy:load_eye"
+after "deploy:cleanup", "deploy:restart"
 # after "deploy:restart", "airbrake:deploy"
 # after "airbrake:deploy", "deploy:add_log"
