@@ -39,9 +39,9 @@ module Mylab
         resource '*', :headers => :any, :methods => [:get, :post, :options]
       end
     end
-    # config.action_dispatch.default_headers = {
-    #   'Access-Control-Allow-Origin' => '*'
-    # }
+    config.action_dispatch.default_headers = {
+      'Access-Control-Allow-Origin' => '*'
+    }
 
     config.active_job.queue_adapter = :sidekiq
 

@@ -15,11 +15,11 @@ class API::V1::CategoriesController < ApplicationController
       @categories = @categories.page(page).per(per_page)
       meta[:total_pages] = @categories.total_pages
     end
-    render json: @categories, each_serializer: API::V1::CategorySerializer, meta: meta
+    respond_with @categories, each_serializer: API::V1::CategorySerializer, meta: meta
   end
 
   def show
-    render json: @category, serializer: API::V1::CategorySerializer
+    respond_with @category, serializer: API::V1::CategorySerializer
   end
 
   def create
@@ -32,11 +32,11 @@ class API::V1::CategoriesController < ApplicationController
 
   def update
     @category.update_attributes sanitizer
-    render json: @category
+    respond_with @category
   end
 
   def destroy
-    render json: @category.destroy
+    respond_with @category.destroy
   end
 
 

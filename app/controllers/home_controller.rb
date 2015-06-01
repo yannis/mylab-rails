@@ -9,7 +9,7 @@ class HomeController < ApplicationController
 
 private
   def bootstrap_index(index_key)
-    redis = Redis.new(host: "129.194.56.70", password: "2NVMpacQdBNfb8WMHq2wnHgCPWvGMfoGoN2YdYYa4fKyjTiCmM")
+    redis = Redis.new(host: ENV['REDIS_HOST'], password: ENV["REDIS_PASSWORD"])
     index_key ||= 'mylab:'
     byebug
     redis.get(index_key)

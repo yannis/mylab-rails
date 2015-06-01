@@ -15,11 +15,11 @@ class API::V1::DocumentsController < ApplicationController
       @documents = @documents.page(page).per(per_page)
       meta[:total_pages] = @documents.total_pages
     end
-    render json: @documents, each_serializer: API::V1::DocumentSerializer, meta: meta
+    respond_with @documents, each_serializer: API::V1::DocumentSerializer, meta: meta
   end
 
   def show
-    render json: @document, serializer: API::V1::DocumentSerializer
+    respond_with @document, serializer: API::V1::DocumentSerializer
   end
 
   def create

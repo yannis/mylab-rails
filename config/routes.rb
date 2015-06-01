@@ -1,16 +1,12 @@
 require 'sidekiq/web'
 Rails.application.routes.draw do
 
-  get 'home/index'
-
   namespace :api do
     namespace :v1 do
       devise_for :users, controllers: {
         sessions: 'api/v1/sessions',
         passwords: 'api/v1/passwords'
-      } do
-        options  "api/v1/users/sign_out" => "api/v1/sessions#destroy"
-      end
+      }
 
       # mount_devise_token_auth_for 'User', at: 'users', skip: [:omniauth_callbacks], controllers: {
       #   sessions: 'api/v1/sessions',
