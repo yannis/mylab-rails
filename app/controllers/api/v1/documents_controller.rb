@@ -23,6 +23,7 @@ class API::V1::DocumentsController < ApplicationController
   end
 
   def create
+    @document.user = current_user
     if @document.save
       render json: @document, serializer: API::V1::DocumentSerializer, status: :created
     else
