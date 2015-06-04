@@ -15,7 +15,6 @@ if Rails.env.production?
       password: ENV['REDIS_PASSWORD']
     }
   end
-end
 
 else
   Sidekiq.configure_server do |config|
