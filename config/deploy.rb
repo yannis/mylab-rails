@@ -17,7 +17,7 @@ set :repo_url, 'git@github.com:yannis/mylab-rails.git'
 # set :log_level, :debug
 
 # Default value for :pty is false
-# set :pty, true
+set :pty, false
 
 # Default value for :linked_files is []
 set :linked_files, %w{config/database.yml config/application.yml}
@@ -59,6 +59,25 @@ set :deploy_to, "/var/www/#{fetch(:application)}"
 set :eye_unicorn_config, "#{fetch(:deploy_to)}/current/config/unicorn_#{fetch(:stage)}.eye"
 # set :god_unicorn_config, "#{fetch(:deploy_to)}/current/config/unicorn_#{fetch(:stage)}.god"
 # set :god_with_path, "/Users/yannis/.rbenv/shims/god"
+
+
+# sidekiq
+
+set :sidekiq_default_hooks, true
+set :sidekiq_pid, File.join(shared_path, 'tmp', 'pids', 'sidekiq.pid')
+# set sidekiq_env: fetch(:rack_env, fetch(:rails_env, fetch(:stage)))
+set :sidekiq_log, File.join(shared_path, 'log', 'sidekiq.log')
+# set sidekiq_options: nil
+# set sidekiq_require: nil
+# set sidekiq_tag: nil
+# set sidekiq_config: nil
+set :sidekiq_queue, nil
+# set sidekiq_timeout: 10
+set :sidekiq_role, :app
+set :sidekiq_processes, 2
+# set sidekiq_options_per_process: nil
+# set sidekiq_concurrency: nil
+# set sidekiq_monit_templates_path: 'config/deploy/templates'
 
 namespace :deploy do
 

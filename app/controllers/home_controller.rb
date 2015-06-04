@@ -11,7 +11,6 @@ private
   def bootstrap_index(index_key)
     redis = Redis.new(host: ENV['REDIS_HOST'], password: ENV["REDIS_PASSWORD"])
     index_key ||= 'mylab:'
-    byebug
     redis.get(index_key)
   end
 end

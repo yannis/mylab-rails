@@ -44,7 +44,7 @@ Rails.application.routes.draw do
     end
   end
   mount Sidekiq::Web, at: "/sidekiq"
-
+  get '*foo', to: 'home#index', constraints: {format:'html'}
   root 'home#index'
 end
 
