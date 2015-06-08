@@ -10,6 +10,18 @@ class Membership < ActiveRecord::Base
   validates_presence_of :role
   validates_inclusion_of :role, in: MEMBERSHIP_ROLES
 
+  validates_each :role do |record, attr, value|
+    group = record.group
+    if group
+      group_memberships_admin = group.memberships.admin
+      admin_counts = group_memberships_admin.count
+      group_last_admin_membership = group.memberships.admin.last
+      if record.role_changed? && record.role == 'basic' && record.role_was == 'admin' && admin_counts == 1 && group_last_admin_membership == record
+        record.errors.add attr, ": This membership is the last admin membership of this group. You can't change it to 'basic'"
+      end
+    end
+  end
+
   def self.admin
     where(role: "admin")
   end

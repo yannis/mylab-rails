@@ -34,5 +34,10 @@ RSpec.describe Membership, type: :model do
     it { expect{group1_basic_membership.destroy}.to_not raise_error}
     it { expect{group1_admin_membership.destroy}.to raise_error "Cannot destroy the last membership of a group"}
 
+    describe "change the role of the last admin membership of a group" do
+      before {group1_admin_membership.update_attributes(role: 'basic')}
+      it {expect(group1_admin_membership).to_not be_valid_verbose}
+      it {expect(group1_admin_membership.errors.full_messages_for(:role).to_sentence).to eql  "Role : This membership is the last admin membership of this group. You can't change it to 'basic'"}
+    end
   end
 end
