@@ -6,9 +6,10 @@ class Invitation < ActiveRecord::Base
   INVITATION_STATE = ["accepted", "declined"]
 
   validates_presence_of :inviter
-  validates_uniqueness_of :invited_id, scope: :group_id
+  validates_uniqueness_of :invited_id, scope: :group_id, allow_nil: true, allow_blank: true
   validates_presence_of :group
-  validates_presence_of :email, if: Proc.new{|invitation| invitation.inviter_id.blank? }
+  validates_presence_of :email, if: Proc.new{|invitation| invitation.invited_id.blank? }
+  validates_uniqueness_of :email, scope: :group_id, allow_nil: true, allow_blank: true
   validates_inclusion_of :state, in: INVITATION_STATE, allow_nil: true
 
   validates_each :inviter_id do |record, attr, value|
