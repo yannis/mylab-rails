@@ -15,7 +15,7 @@ class API::V1::CategoriesController < ApplicationController
       @categories = @categories.page(page).per(per_page)
       meta[:total_pages] = @categories.total_pages
     end
-    respond_with @categories, each_serializer: API::V1::CategorySerializer, meta: meta
+    respond_with @categories.includes(:documents), each_serializer: API::V1::CategorySerializer, meta: meta
   end
 
   def show

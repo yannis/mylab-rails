@@ -6,7 +6,7 @@ class API::V1::MembershipsController < ApplicationController
   respond_to :json
 
   def index
-    respond_with @memberships, each_serializer: API::V1::MembershipSerializer
+    respond_with @memberships.includes(:group), each_serializer: API::V1::MembershipSerializer
   end
 
   def show

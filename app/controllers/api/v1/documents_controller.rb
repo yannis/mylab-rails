@@ -15,7 +15,7 @@ class API::V1::DocumentsController < ApplicationController
       @documents = @documents.page(page).per(per_page)
       meta[:total_pages] = @documents.total_pages
     end
-    respond_with @documents, each_serializer: API::V1::DocumentSerializer, meta: meta
+    respond_with @documents.includes([:category, :user, :versions, :pictures, :attachments, :sharings]), each_serializer: API::V1::DocumentSerializer, meta: meta
   end
 
   def show
@@ -24,6 +24,7 @@ class API::V1::DocumentsController < ApplicationController
 
   def create
     @document.user = current_user
+    Rails.logger.debug "@document.user_id: #{@document.user_id}"
     if @document.save
       render json: @document, serializer: API::V1::DocumentSerializer, status: :created
     else

@@ -22,6 +22,7 @@ gem "kaminari"
 gem "rmagick"
 gem "carrierwave"
 gem "redcarpet"
+gem 'reverse_markdown'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 gem "word-to-markdown"
@@ -65,6 +66,7 @@ group :development do
   gem 'capistrano-rbenv'
   gem 'capistrano-sidekiq', github: 'seuros/capistrano-sidekiq'
   gem 'capistrano-maintenance', github: "capistrano/maintenance", require: false
+  gem "bullet"
 end
 
 group :test do

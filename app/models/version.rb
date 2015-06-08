@@ -9,14 +9,20 @@ class Version < ActiveRecord::Base
   validates_uniqueness_of :name, scope: :document_id
 
   before_save :set_html
-  before_validation :set_name
+  before_validation :set_name, :set_md
 
 private
 
   def set_html
-    if self.content_md
+    if self.content_md.present?
       markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
       self.content_html = markdown.render(self.content_md)
+    end
+  end
+
+  def set_md
+    if self.content_md.blank? && self.content_html.present?
+      self.content_md = ReverseMarkdown.convert(self.content_html)
     end
   end
 

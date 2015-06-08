@@ -21,7 +21,7 @@ def sidekiq_process(proxy, name)
   end
 end
 
-Eye.application :sidekiq_test do
+Eye.application :sidekiq_production do
   working_dir APP_PATH
 
   sidekiq_process self, :sidekiq

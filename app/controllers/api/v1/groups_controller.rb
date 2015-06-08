@@ -3,7 +3,7 @@ class API::V1::GroupsController < ApplicationController
   load_and_authorize_resource :group, param_method: :sanitizer
 
   def index
-    respond_with @groups, each_serializer: API::V1::GroupSerializer
+    respond_with @groups.includes(:invitations, :sharings, :memberships), each_serializer: API::V1::GroupSerializer
   end
 
   def show

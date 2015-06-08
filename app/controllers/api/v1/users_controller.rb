@@ -1,12 +1,14 @@
 class API::V1::UsersController < ApplicationController
 
-  load_and_authorize_resource :user, param_method: :sanitizer, except: [:create]
+  load_and_authorize_resource :user, param_method: :sanitizer, except: [:create], except: [:show]
 
   def index
     respond_with @users, each_serializer: API::V1::UserSerializer
   end
 
   def show
+    @user = User.where(id: params[:id]).includes({memberships: [:group]}, :invitations_as_inviter, :invitations_as_invited).accessible_by(current_ability).first
+    authorize! :read, @user
     respond_to do |format|
       format.json {
         render json: @user, serializer: API::V1::UserSerializer

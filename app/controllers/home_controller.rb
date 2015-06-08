@@ -2,7 +2,7 @@ class HomeController < ApplicationController
   def index
     respond_to do |format|
       format.html {
-        render html: bootstrap_index(params[:index_key]).html_safe
+        render html: bootstrap_index(params[:index_key]).try(:html_safe)
       }
     end
   end
