@@ -19,6 +19,15 @@ class Ability
     if user.admin?
         can :manage, :all
     else
+
+      # attachments
+      can :read, Attachment, attachable: {user_id: user.id}
+      can :read, Attachment, attachable: {groups: {id: group_ids}}
+      can :create, Attachment, attachable: {user_id: user.id}
+      can :update, Attachment, attachable: {user_id: user.id}
+      can :update, Attachment, attachable: {groups: {id: group_ids}}
+      can :destroy, Attachment, attachable: {user_id: user.id}
+
       # categories
       can :read, Category
       can :create, Category
@@ -53,6 +62,14 @@ class Ability
       can :create, Membership, {group_id: admin_group_ids}
       can :update, Membership, {group_id: admin_group_ids}
       can :destroy, Membership, {group_id: admin_group_ids}
+
+      # pictures
+      can :read, Picture, picturable: {user_id: user.id}
+      can :read, Picture, picturable: {groups: {id: group_ids}}
+      can :create, Picture, picturable: {user_id: user.id}
+      can :update, Picture, picturable: {user_id: user.id}
+      can :update, Picture, picturable: {groups: {id: group_ids}}
+      can :destroy, Picture, picturable: {user_id: user.id}
 
       # sharings
       can :read, Sharing, sharable: {user_id: user.id}
