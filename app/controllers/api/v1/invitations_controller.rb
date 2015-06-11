@@ -1,13 +1,13 @@
 class API::V1::InvitationsController < ApplicationController
 
-  load_and_authorize_resource :invitation, param_method: :sanitizer, except: [:accept, :decline, :create_user]
+  load_and_authorize_resource :invitation, param_method: :sanitizer, except: [:index, :accept, :decline, :create_user]
 
 
   respond_to :json
 
   def index
-    if params[:token]
-      @invitations = Invitation.where(token: params[:token])
+    if params[:token].present?
+      @invitations = Invitation.pending.where(token: params[:token])
     else
       authorize! :read, Invitation
       @invitations = Invitation.accessible_by(Ability.new(current_user), :read)
@@ -15,7 +15,7 @@ class API::V1::InvitationsController < ApplicationController
     if params[:id]
       @invitations = @invitations.where(id: params[:id])
     end
-    respond_with @invitations, each_serializer: API::V1::InvitationSerializer
+    render json: @invitations, each_serializer: API::V1::InvitationSerializer
   end
   # def index
   #   if params[:token]
@@ -45,18 +45,22 @@ class API::V1::InvitationsController < ApplicationController
     end
   end
 
-  # def update
-  #   @invitation.update_attributes sanitizer
-  #   respond_with @invitation
-  # end
+  def update
+    @invitation.update_attributes sanitizer
+    respond_with @invitation
+  end
 
   def destroy
     respond_with @invitation.destroy
   end
 
   def accept
-    @invitation = Invitation.find(params[:id])
-    authorize! :update, @invitation
+    if params[:token].present?
+      @invitation = Invitation.where(id: params[:id], token: params[:token]).first
+    else
+      @invitation = Invitation.find(params[:id])
+      authorize! :update, @invitation
+    end
     if @invitation.accept!
       respond_with nil, status: :accepted
     else
@@ -65,8 +69,12 @@ class API::V1::InvitationsController < ApplicationController
   end
 
   def decline
-    @invitation = Invitation.find(params[:id])
-    authorize! :update, @invitation
+    if params[:token].present?
+      @invitation = Invitation.where(id: params[:id], token: params[:token]).first
+    else
+      @invitation = Invitation.find(params[:id])
+      authorize! :update, @invitation
+    end
     if @invitation.decline!
       respond_with nil, status: :accepted
     else

@@ -4,6 +4,7 @@ RSpec.describe API::V1::PicturesController, type: :controller do
   context "Logged in" do
 
     let(:user) { create :user }
+    let(:document) { create :document, user: user }
     before { sign_in(user) }
 
     # describe "GET #index" do
@@ -16,7 +17,7 @@ RSpec.describe API::V1::PicturesController, type: :controller do
 
     describe "GET #create" do
       it "returns http success" do
-        post :create, picture: { image: {filename: "Ruben-DaSilva.png", type: "image/png", data: data, size: 24931}, picturable_id: 1, picturable_type: "Document"}
+        xhr :post, :create, picture: { image: {filename: "Ruben-DaSilva.png", type: "image/png", data: data, size: 24931}, picturable_id: document.to_param, picturable_type: "Document"}
         expect(response).to have_http_status(:success)
       end
     end

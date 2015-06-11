@@ -8,7 +8,7 @@ Eye.config do
   logger "#{APP_PATH}/log/eye.log"
 end
 
-Eye.application "mylab_rails_production" do
+Eye.application :mylab_rails_production do
   env "RAILS_ENV" => RAILS_ENV
 
   # unicorn requires to be `ruby` in path (for soft restart)
@@ -22,7 +22,7 @@ Eye.application "mylab_rails_production" do
     uid "yannis"
     pid_file "tmp/pids/mylab_rails_production_unicorn.pid"
     # start_command "#{RUBY} ./bin/unicorn -Dc ./config/unicorn.rb -E #{RAILS_ENV}"
-    start_command "bundle exec unicorn -c config/unicorn_production.rb -E production -D"
+    start_command "bundle exec unicorn -c config/unicorn_production.rb -E #{RAILS_ENV} -D"
     start_grace 10
     stdall "log/unicorn.log"
 
@@ -46,3 +46,23 @@ Eye.application "mylab_rails_production" do
     end
   end
 end
+
+def sidekiq_process(proxy, name)
+  proxy.process(name) do
+    start_command "bundle exec sidekiq -e #{RAILS_ENV} -C config/sidekiq.yml"
+    pid_file "tmp/pids/#{name}.pid"
+    stdall "log/#{name}.log"
+    daemonize true
+    stop_signals [:USR1, 0, :TERM, 10.seconds, :KILL]
+
+    check :cpu, :every => 30, :below => 100, :times => 5
+    check :memory, :every => 30, :below => 300.megabytes, :times => 5
+  end
+end
+
+Eye.application :sidekiq_production do
+  working_dir APP_PATH
+
+  sidekiq_process self, :sidekiq
+end
+

@@ -36,7 +36,7 @@ RSpec.describe Invitation, type: :model do
   end
 
   describe "Accepting an invitation" do
-    let(:invitation) {create :invitation}
+    let!(:invitation) {create :invitation}
 
     before {
       @membership_count = Membership.count
@@ -89,7 +89,7 @@ RSpec.describe Invitation, type: :model do
 
 
   describe "Declining an invitation" do
-    let(:invitation) {create :invitation}
+    let!(:invitation) {create :invitation}
 
     before {
       @membership_count = Membership.count

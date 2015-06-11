@@ -58,7 +58,7 @@ class User < ActiveRecord::Base
   end
 
   def has_access_to?(document)
-    (self.groups&document.groups).present?
+    document.user == self || (self.groups&document.groups).present?
   end
 
   def email=(value)

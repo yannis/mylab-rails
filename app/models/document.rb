@@ -11,7 +11,7 @@ class Document < ActiveRecord::Base
 
   validates_presence_of :user
   validates_presence_of :name
-  validates_presence_of :category
+  # validates_presence_of :category
   validates_uniqueness_of :name
 
   # accepts_nested_attributes_for :pictures, allow_destroy: true

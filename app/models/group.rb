@@ -11,6 +11,6 @@ class Group < ActiveRecord::Base
   accepts_nested_attributes_for :memberships, allow_destroy: true
 
   def has_access_to?(document)
-    self.documents.includes document
+    self.documents.include?(document)
   end
 end

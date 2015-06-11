@@ -1,6 +1,6 @@
 class API::V1::UsersController < ApplicationController
 
-  load_and_authorize_resource :user, param_method: :sanitizer, except: [:create], except: [:show]
+  load_and_authorize_resource :user, param_method: :sanitizer, except: [:create, :show]
 
   def index
     respond_with @users, each_serializer: API::V1::UserSerializer
@@ -18,8 +18,9 @@ class API::V1::UsersController < ApplicationController
 
   def create
     @user = User.new sanitizer
-    if params[:user][:token] && params[:user][:invitation_id]
+    if params[:user][:token].present? && params[:user][:invitation_id].present?
       invitation = Invitation.pending.where(id: params[:user][:invitation_id], token: params[:user][:token]).first
+      @user.email = invitation.email
       if invitation.blank?
         @user.errors.add :base, "You're not authorized to create a user"
       end
@@ -27,6 +28,9 @@ class API::V1::UsersController < ApplicationController
       authorize! :create, User
     end
     if @user.save
+      if invitation
+        invitation.accept!
+      end
       render json: @user, serializer: API::V1::UserSerializer, status: :created
     else
       render json: {errors: @user.errors}, status: :unprocessable_entity
