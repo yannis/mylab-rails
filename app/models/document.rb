@@ -24,4 +24,8 @@ class Document < ActiveRecord::Base
   def shared_with?(object)
     object.has_access_to? self
   end
+
+  def sharable_with_group?(group)
+    self.user.groups.include? group
+  end
 end

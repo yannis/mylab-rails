@@ -43,13 +43,12 @@ RSpec.describe User, type: :model do
 
   describe "Document interaction" do
     context "2 users of a same group and a third of another group" do
-      let(:group) { create :group }
-      let!(:user) { create :user, memberships: [create(:membership, group: group)]}
-      let!(:document1) { create :document, sharings: [create(:sharing, group: group)]}
-      let!(:document2) { create :document, sharings: [create(:sharing)]}
+      let(:sharing1) { create :sharing }
+      let(:sharing2) { create :sharing }
+      let!(:user1) { create :user, memberships: [build(:membership, group: sharing1.group)]}
 
-      it {expect(user).to have_access_to document1}
-      it {expect(user).to_not have_access_to document2}
+      it {expect(user1).to have_access_to sharing1.sharable}
+      it {expect(user1).to_not have_access_to sharing2.sharable}
     end
   end
 

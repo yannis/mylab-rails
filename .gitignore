@@ -31,3 +31,5 @@ public/uploads/*
 
 public/cache/*
 vendor/bundle/*
+
+coverage/

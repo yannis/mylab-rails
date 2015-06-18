@@ -20,6 +20,9 @@ RSpec.describe Invitation, type: :model do
 
     it {expect(invitation).to be_valid}
     it {expect(invitation).to be_pending}
+    it {expect(Invitation.pending).to include invitation}
+    it{expect(Invitation.accepted).to_not include invitation}
+    it{expect(Invitation.declined).to_not include invitation}
   end
 
   describe "An invitation not made by an admin" do
@@ -44,6 +47,9 @@ RSpec.describe Invitation, type: :model do
     }
 
     it{expect(invitation).to be_accepted}
+    it{expect(Invitation.accepted).to include invitation}
+    it{expect(Invitation.declined).to_not include invitation}
+    it{expect(Invitation.pending).to_not include invitation}
     it{expect(invitation).to_not be_pending}
     it{expect(invitation).to_not be_declined}
     it{expect(Membership.count-@membership_count).to eql 1}
@@ -87,7 +93,6 @@ RSpec.describe Invitation, type: :model do
     it{ expect(invitation.errors.full_messages.to_sentence).to eql "This invitation has already been declined" }
   end
 
-
   describe "Declining an invitation" do
     let!(:invitation) {create :invitation}
 
@@ -100,5 +105,48 @@ RSpec.describe Invitation, type: :model do
     it{expect(invitation).to_not be_pending}
     it{expect(invitation).to_not be_accepted}
     it{expect(Membership.count-@membership_count).to eql 0}
+  end
+
+  describe "Inviting an existing user by email" do
+    let(:invited) { create :user }
+    let(:invitation) {create :invitation, email: invited.email, invited: nil}
+    it {expect(invitation.invited).to eql invited}
+  end
+
+  describe "Inviting an existing user should send an email" do
+    include ActiveJob::TestHelper
+    before {
+      ActionMailer::Base.deliveries = []
+      clear_enqueued_jobs
+      invitation.save
+    }
+    after {clear_enqueued_jobs}
+    let!(:invited) { create :user }
+    let(:invitation) {build :invitation, email: invited.email, invited: nil}
+
+    it 'should email' do
+      perform_enqueued_jobs do
+        delivered_email = ActionMailer::Base.deliveries.first
+        assert_includes delivered_email.to, invited.email
+      end
+    end
+  end
+
+  describe "Inviting an new user should send an email" do
+    include ActiveJob::TestHelper
+    before {
+      ActionMailer::Base.deliveries = []
+      clear_enqueued_jobs
+      invitation.save
+    }
+    after {clear_enqueued_jobs}
+    let(:invitation) {build :invitation, email: "anemail@email.com", invited: nil}
+
+    it 'should email' do
+      perform_enqueued_jobs do
+        delivered_email = ActionMailer::Base.deliveries.first
+        assert_includes delivered_email.to, invitation.email
+      end
+    end
   end
 end

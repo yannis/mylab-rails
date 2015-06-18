@@ -4,8 +4,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       devise_for :users, controllers: {
-        sessions: 'api/v1/sessions',
-        passwords: 'api/v1/passwords'
+        sessions: 'api/v1/sessions'
       }
 
       # mount_devise_token_auth_for 'User', at: 'users', skip: [:omniauth_callbacks], controllers: {

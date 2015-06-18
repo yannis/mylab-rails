@@ -58,7 +58,7 @@ private
 
   def authenticate_user
     token = params[:token].presence
-    user_email = params[:user_email].presence
+    user_email = params[:email].presence
     user = user_email && User.find_by_email(user_email)
     if user && Devise.secure_compare(user.authentication_token, token)
       sign_in user, store: false

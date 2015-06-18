@@ -22,14 +22,16 @@ class API::V1::MembershipsController < ApplicationController
   end
 
   def update
-    @membership.update_attributes sanitizer
-    respond_with @membership
+    if @membership.update_attributes sanitizer
+      render json: @membership, serializer: API::V1::MembershipSerializer, status: :created
+    else
+      render json: {errors: @membership.errors}, status: :unprocessable_entity
+    end
   end
 
   def destroy
     respond_with @membership.destroy
   end
-
 
 private
 

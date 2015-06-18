@@ -14,8 +14,10 @@ RSpec.describe Group, type: :model do
     let(:group) { create :group }
 
     context "that has a document" do
-      let(:user) {create :user}
-      let(:document) {create :document, user: user, sharings: [build(:sharing, group: group)]}
+      let(:sharing) {create :sharing}
+      let(:group) { sharing.group }
+      let(:document) {sharing.sharable}
+      let(:user) {document.user}
 
       it {expect(group).to have_access_to document}
     end

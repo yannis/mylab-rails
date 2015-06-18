@@ -24,7 +24,6 @@ class API::V1::DocumentsController < ApplicationController
 
   def create
     @document.user = current_user
-    Rails.logger.debug "@document.user_id: #{@document.user_id}"
     if @document.save
       render json: @document, serializer: API::V1::DocumentSerializer, status: :created
     else
@@ -33,8 +32,11 @@ class API::V1::DocumentsController < ApplicationController
   end
 
   def update
-    @document.update_attributes sanitizer
-    respond_with @document
+    if @document.update_attributes(sanitizer)
+      render json: @document, serializer: API::V1::DocumentSerializer, status: :created
+    else
+      render json: {errors: @document.errors}, status: :unprocessable_entity
+    end
   end
 
   def destroy

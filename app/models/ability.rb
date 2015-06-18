@@ -8,10 +8,10 @@ class Ability
     group_ids = user.groups.pluck(:id)
     admin_group_ids = user.admin_groups.pluck(:id)
 
-    if user.admin?
+    if user.persisted?
+      if user.admin?
         can :manage, :all
-    else
-      if user.persisted?
+      else
         # attachments
         can :read, Attachment, attachable: {user_id: user.id}
         can :read, Attachment, attachable: {groups: {id: group_ids}}
@@ -53,6 +53,9 @@ class Ability
         # memberships
         can :read, Membership, {group_id: group_ids}
         can :create, Membership, {group_id: admin_group_ids}
+        can :create, Membership do |membership|
+          user.admin_of_group?(membership.group)
+        end
         can :update, Membership, {group_id: admin_group_ids}
         can :destroy, Membership, {group_id: admin_group_ids}
 
@@ -65,10 +68,15 @@ class Ability
         can :destroy, Picture, picturable: {user_id: user.id}
 
         # sharings
-        can :read, Sharing, sharable: {user_id: user.id}
+        # can :read, Sharing
         can :read, Sharing, group: {memberships: {user_id: user.id}}
-        can :create, Sharing
-        can :destroy, Sharing, sharable: {user_id: user.id}
+        # can :read, Sharing, sharable_type: {memberships: {user_id: user.id}}
+        can :create, Sharing do |sharing|
+          sharing.sharable.user == user
+        end
+        can :destroy, Sharing do |sharing|
+          sharing.sharable.user == user
+        end
 
         # users
         can :read, User, id: user.id

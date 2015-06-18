@@ -14,13 +14,11 @@ class API::V1::SharingsController < ApplicationController
   end
 
   def create
-    @sharing.save!
-    render json: @sharing, serializer: API::V1::SharingSerializer
-  end
-
-  def update
-    @sharing.update_attributes sanitizer
-    respond_with @sharing
+    if @sharing.save
+      render json: @sharing, serializer: API::V1::SharingSerializer, status: :created
+    else
+      render json: {errors: @sharing.errors}, status: :unprocessable_entity
+    end
   end
 
   def destroy

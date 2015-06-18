@@ -7,7 +7,7 @@ class API::V1::UsersController < ApplicationController
   end
 
   def show
-    @user = User.where(id: params[:id]).includes({memberships: [:group]}, :invitations_as_inviter, :invitations_as_invited).accessible_by(current_ability).first
+    @user = User.where(id: params[:id]).includes(:invitations_as_inviter, :invitations_as_invited, :documents).accessible_by(current_ability).first
     authorize! :read, @user
     respond_to do |format|
       format.json {
