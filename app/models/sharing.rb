@@ -8,7 +8,7 @@ class Sharing < ActiveRecord::Base
 
   validates_each :group_id do |sharing, attr, value|
     if sharing.sharable.present? && sharing.group.present? && !sharing.sharable.sharable_with_group?(sharing.group)
-      sharing.errors.add attr, ": You're not member of this group"
+      sharing.errors.add attr, ": You must be a member of this group"
     end
   end
 end

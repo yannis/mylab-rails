@@ -32,7 +32,13 @@ RSpec.describe Membership, type: :model do
     it {expect(Membership.of_user(user2)).to match_array [group1_basic_membership, group2_basic_membership]}
 
     it { expect{group1_basic_membership.destroy}.to_not raise_error}
-    it { expect{group1_admin_membership.destroy}.to raise_error "Cannot destroy the last membership of a group"}
+    it { expect(group1_admin_membership.destroy).to be false}
+
+    describe "destroying a not destroyable membership" do
+      before {group1_admin_membership.destroy}
+
+      it {expect(group1_admin_membership.errors[:base]).to match_array [": This membership is the last membership of this group. You can't destroy it.'"]}
+    end
 
     describe "change the role of the last admin membership of a group" do
       before {group1_admin_membership.update_attributes(role: 'basic')}

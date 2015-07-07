@@ -56,8 +56,12 @@ class Ability
         can :create, Membership do |membership|
           user.admin_of_group?(membership.group)
         end
-        can :update, Membership, {group_id: admin_group_ids}
-        can :destroy, Membership, {group_id: admin_group_ids}
+        can :update, Membership do |membership|
+          admin_group_ids.include?(membership.group_id) && membership.destroyable?
+        end
+        can :destroy, Membership do |membership|
+          admin_group_ids.include?(membership.group_id) && membership.destroyable?
+        end
 
         # pictures
         can :read, Picture, picturable: {user_id: user.id}

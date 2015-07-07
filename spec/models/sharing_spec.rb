@@ -18,6 +18,6 @@ RSpec.describe Sharing, type: :model do
 
     before {sharing.valid?}
     it{expect(sharing).to_not be_valid}
-    it{expect(sharing.errors.full_messages_for(:group_id).to_sentence).to match /You're not member of this group/ }
+    it{expect(sharing.errors.full_messages_for(:group_id).to_sentence).to match /Group : You must be a member of this group/ }
   end
 end

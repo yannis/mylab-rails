@@ -39,12 +39,20 @@ class Membership < ActiveRecord::Base
   end
 
   def destroy
-    unless can_destroy
-      raise "Cannot destroy the last membership of a group"
+    unless self.destroyable?
+      self.errors.add :base, ": This membership is the last membership of this group. You can't destroy it.'"
       return false
     end
     super
   end
+
+  # def destroy
+  #   unless can_destroy
+  #     raise "Cannot destroy the last membership of a group"
+  #     return false
+  #   end
+  #   super
+  # end
 
   def admin?
     role.to_s == "admin"
@@ -54,9 +62,7 @@ class Membership < ActiveRecord::Base
     role.to_s == "basic"
   end
 
-private
-
-  def can_destroy
+  def destroyable?
     memberships_count = self.group.memberships.count
     admin_memberships_count = self.group.memberships.admin.count
     if self.marked_for_destruction?

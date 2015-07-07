@@ -30,7 +30,11 @@ class API::V1::MembershipsController < ApplicationController
   end
 
   def destroy
-    respond_with @membership.destroy
+    if @membership.destroy
+      render json: @membership, serializer: API::V1::MembershipSerializer, status: 200
+    else
+      render json: {errors: @membership.errors}, status: :unprocessable_entity
+    end
   end
 
 private
