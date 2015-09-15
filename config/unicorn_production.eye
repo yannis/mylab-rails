@@ -22,7 +22,7 @@ Eye.application :mylab_rails_production do
     uid "yannis"
     pid_file "tmp/pids/mylab_rails_production_unicorn.pid"
     # start_command "#{RUBY} ./bin/unicorn -Dc ./config/unicorn.rb -E #{RAILS_ENV}"
-    start_command "bundle exec unicorn -c config/unicorn_production.rb -E #{RAILS_ENV} -D"
+    start_command "/Users/yannis/.rbenv/shims/bundle exec unicorn -c config/unicorn_production.rb -E #{RAILS_ENV} -D"
     start_grace 10
     stdall "log/unicorn.log"
 
@@ -49,7 +49,7 @@ end
 
 def sidekiq_process(proxy, name)
   proxy.process(name) do
-    start_command "bundle exec sidekiq -e #{RAILS_ENV} -C config/sidekiq.yml"
+    start_command "/Users/yannis/.rbenv/shims/bundle exec sidekiq -e #{RAILS_ENV} -C config/sidekiq.yml"
     pid_file "tmp/pids/#{name}.pid"
     stdall "log/#{name}.log"
     daemonize true
