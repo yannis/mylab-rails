@@ -46,23 +46,3 @@ Eye.application :mylab_rails_production do
     end
   end
 end
-
-def sidekiq_process(proxy, name)
-  proxy.process(name) do
-    start_command "/Users/yannis/.rbenv/shims/bundle exec sidekiq -e #{RAILS_ENV} -C config/sidekiq.yml"
-    pid_file "tmp/pids/#{name}.pid"
-    stdall "log/#{name}.log"
-    daemonize true
-    stop_signals [:USR1, 0, :TERM, 10.seconds, :KILL]
-
-    check :cpu, :every => 30, :below => 100, :times => 5
-    check :memory, :every => 30, :below => 300.megabytes, :times => 5
-  end
-end
-
-Eye.application :sidekiq_production do
-  working_dir APP_PATH
-
-  sidekiq_process self, :sidekiq
-end
-
